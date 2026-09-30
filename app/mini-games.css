@@ -1,0 +1,335 @@
+.mini-games {
+  margin-top: 28px;
+  padding: 28px;
+  border: 1px solid #dde4d4;
+  border-radius: 24px;
+  background: #fdfdf7;
+  grid-column: 1/-1;
+  width: 100%;
+  box-sizing: border-box;
+}
+.mini-games-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.mini-games-heading h3 {
+  font-size: 25px;
+  margin: 8px 0;
+}
+.mini-games-heading p:not(.eyebrow) {
+  font-size: 14px;
+  color: #707e69;
+  margin: 0;
+}
+.mini-xp-badge {
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #f6eac6;
+  color: #6b5935;
+  padding: 10px 14px;
+  border-radius: 30px;
+}
+.mini-game-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 23px 0 16px;
+}
+.mini-game-tabs button {
+  background: #f0f3e9;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 16px 12px;
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  color: #53644c;
+  cursor: pointer;
+}
+.mini-game-tabs button[aria-pressed="true"] {
+  border-color: #608252;
+  background: #e6eedb;
+  box-shadow: 0 2px 0 #608252;
+}
+.mini-game-tabs button > span {
+  font-size: 26px;
+}
+.mini-game-tabs b {
+  font-size: 14px;
+}
+.mini-game-tabs small {
+  font-size: 11px;
+}
+.mini-game-tabs button:disabled {
+  cursor: default;
+}
+.mini-game-tabs button:disabled:not([aria-pressed="true"]) {
+  opacity: 0.55;
+}
+.mini-playground {
+  position: relative;
+  height: 310px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #edf4df, #f5f6e9);
+  overflow: hidden;
+  isolation: isolate;
+}
+.mini-playground-soil {
+  background: linear-gradient(180deg, #f3eedb, #ebe7cb);
+}
+.mini-garden-drawing {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+}
+.mini-start-card {
+  position: absolute;
+  inset: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  border: 1px solid #ffffffb8;
+  border-radius: 16px;
+  background: #fafbf0df;
+  backdrop-filter: blur(3px);
+  padding: 16px;
+}
+.mini-start-card > span {
+  font-size: 39px;
+}
+.mini-start-card h4 {
+  font-size: 21px;
+  margin: 0;
+  color: #36553c;
+}
+.mini-start-card p {
+  font-size: 13px;
+  color: #64705d;
+  margin: 0 0 10px;
+  line-height: 1.7;
+}
+.mini-start-card small {
+  color: #627359;
+  font-size: 12px;
+}
+.mini-start-card .primary {
+  font-size: 13px;
+  min-height: 43px;
+  padding: 10px 18px;
+}
+.mini-target {
+  position: absolute;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 60px;
+  border: 2px solid #fff9e9;
+  border-radius: 20px;
+  background: #fff8e9;
+  box-shadow: 0 4px 0 #73845140;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: mini-wiggle 2.3s ease-in-out infinite;
+  touch-action: manipulation;
+}
+.mini-target > span {
+  font-size: 29px;
+  line-height: 1.2;
+  pointer-events: none;
+}
+.mini-target small {
+  font-size: 10px;
+  font-weight: 700;
+  color: #637046;
+  pointer-events: none;
+}
+.mini-target:hover:not(:disabled) {
+  background: #f9e5a6;
+  border-color: #edc567;
+}
+.mini-target:focus-visible,
+.mini-game-tabs button:focus-visible {
+  outline: 3px solid #3a6747;
+  outline-offset: 5px;
+}
+.mini-target.mini-target-done {
+  animation: mini-target-pop 0.65s ease-out both !important;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  pointer-events: none;
+}
+.mini-game-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 55px;
+  padding-top: 17px;
+  color: #64715b;
+  font-size: 12px;
+}
+.mini-game-status > div {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mini-game-status b {
+  font-size: 12px;
+  font-weight: 500;
+}
+.mini-game-status progress {
+  width: 100%;
+  height: 8px;
+  accent-color: #689655;
+}
+.mini-game-status .primary {
+  font-size: 12px;
+  padding: 11px 16px;
+  white-space: nowrap;
+}
+.mini-cancel {
+  border: 0;
+  background: transparent;
+  font-size: 12px;
+  color: #738267;
+  cursor: pointer;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+.mini-real-tree-note {
+  font-size: 12px !important;
+  line-height: 1.7 !important;
+  color: #728068 !important;
+  background: #f0f3e8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 16px 0 0 !important;
+}
+.mini-win-icon {
+  animation: mini-victory 0.8s ease-out;
+}
+.mini-games button:disabled {
+  cursor: default;
+}
+.mini-start-card .primary:disabled,
+.mini-game-status .primary:disabled {
+  opacity: 0.5;
+}
+.mini-game-tabs button,
+.mini-target {
+  font-family: inherit;
+}
+@keyframes mini-wiggle {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) rotate(-5deg);
+  }
+  50% {
+    transform: translate(-50%, -58%) rotate(5deg);
+  }
+}
+@keyframes mini-target-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 1;
+  }
+  40% {
+    transform: translate(-50%, -65%) scale(1.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -115%) scale(1);
+    opacity: 0;
+  }
+}
+@keyframes mini-victory {
+  0% {
+    transform: scale(0.3) rotate(-30deg);
+  }
+  65% {
+    transform: scale(1.25) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+@media (max-width: 640px) {
+  .mini-games {
+    padding: 18px 14px;
+    border-radius: 18px;
+  }
+  .mini-games-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mini-games-heading h3 {
+    font-size: 22px;
+  }
+  .mini-xp-badge {
+    padding: 7px 12px;
+  }
+  .mini-game-tabs {
+    gap: 6px;
+  }
+  .mini-game-tabs button {
+    padding: 13px 4px;
+  }
+  .mini-game-tabs b {
+    font-size: 12px;
+  }
+  .mini-game-tabs small {
+    font-size: 10px;
+  }
+  .mini-playground {
+    height: 290px;
+  }
+  .mini-start-card {
+    inset: 12px;
+    padding: 12px;
+  }
+  .mini-target {
+    width: 47px;
+    height: 53px;
+    border-radius: 15px;
+  }
+  .mini-target > span {
+    font-size: 25px;
+  }
+  .mini-game-status {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .mini-game-status > div {
+    flex-basis: 100%;
+  }
+  .mini-game-status .primary {
+    flex: 1;
+  }
+  .mini-real-tree-note {
+    font-size: 11px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mini-target,
+  .mini-win-icon {
+    animation: none;
+  }
+  .mini-target.mini-target-done {
+    animation: none !important;
+    opacity: 0;
+  }
+}

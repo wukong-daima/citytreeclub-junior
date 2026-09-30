@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1790731632947,
+      "tag": "0000_little_elektra",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790733458708,
+      "tag": "0001_pale_marvex",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790733895618,
+      "tag": "0002_freezing_wolverine",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1790734148818,
+      "tag": "0003_dashing_toad_men",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1790734464225,
+      "tag": "0004_thick_lethal_legion",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790734619697,
+      "tag": "0005_closed_morg",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1790734751360,
+      "tag": "0006_elite_mentor",
+      "breakpoints": true
+    }
+  ]
+}

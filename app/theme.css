@@ -1,0 +1,146 @@
+.theme-switch {
+  font-size: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.theme-switch:hover {
+  background: #e9eedb;
+}
+:root[data-theme="dark"] {
+  --ink: #dce6cd;
+  --paper: #19271f;
+  --green: #9fb888;
+  --muted: #a1b297;
+  --line: #3d4d38;
+  color-scheme: dark;
+}
+:root[data-theme="dark"] .hero-art {
+  background: radial-gradient(ellipse, #33432b, transparent 70%);
+}
+:root[data-theme="dark"] .orbit {
+  border-color: #3d4d38;
+}
+:root[data-theme="dark"]
+  :is(
+    .discovery,
+    .search-panel,
+    .garden-controls,
+    .club-shell,
+    .event-card,
+    .modal,
+    .journal,
+    .record-card,
+    .effort-dashboard,
+    .celebration
+  ) {
+  background: #243127;
+  border-color: #45533c;
+}
+:root[data-theme="dark"]
+  :is(
+    .garden-scene,
+    .manifesto,
+    .map-header,
+    .map-footer,
+    .tutorial-panel,
+    .physical-points,
+    .physical-kinds .selected,
+    .account-mode,
+    .tree-detail,
+    .club-tree-card,
+    .adopt-form,
+    .care-actions button,
+    .outline,
+    .tree-avatar,
+    .gps-button,
+    .match-note,
+    .physical-rules,
+    .care-note
+  ) {
+  background: #2d3c2b;
+  border-color: #526045;
+}
+:root[data-theme="dark"]
+  :is(
+    .search-input,
+    .search-panel select,
+    .name-form,
+    .profile-panel input,
+    .wizard-field input,
+    .wizard-field select,
+    .wizard-field textarea,
+    .physical-form textarea,
+    .physical-dates input,
+    .physical-dates select,
+    .catalog-search input,
+    .adopt-form input,
+    .adopt-form select,
+    .tree-detail textarea,
+    .journal textarea,
+    .record-card form
+  ) {
+  background: #1c2b21;
+  border-color: #526045;
+  color: #dce6cd;
+}
+:root[data-theme="dark"]
+  :is(
+    .floating-label,
+    .care-bubble,
+    .name-form button,
+    .club-nav button,
+    .event-condition
+  ) {
+  background: #354730;
+  border-color: #586b48;
+  color: #d3dfbf;
+}
+:root[data-theme="dark"] :is(.physical-banner, .physical-shortcut) {
+  background: #443c2d;
+  border-color: #66573f;
+}
+:root[data-theme="dark"]
+  :is(
+    .hero h1 > span,
+    .section-heading h2,
+    .garden-controls h3,
+    .club-intro h3,
+    .profile-panel h3,
+    .record-card h4,
+    .event-body h3,
+    .growth-title b,
+    .manifesto h2
+  ) {
+  color: #c2d4a7;
+}
+:root[data-theme="dark"] .hero h1 > span:after {
+  background: #526244;
+}
+:root[data-theme="dark"] .theme-switch:hover {
+  background: #34472e;
+}
+:root[data-theme="dark"] .announcement {
+  background: #10251a;
+}
+:root[data-theme="dark"] .leaflet-container {
+  color: #263c30;
+}
+:root[data-theme="dark"] .event-art {
+  filter: brightness(0.72);
+}
+:root[data-theme="dark"] .manifesto-leaf {
+  color: #3d4d33;
+}
+:root[data-theme="dark"] .mini-playground {
+  filter: brightness(0.85);
+}
+:root[data-theme="dark"] .mini-start-card {
+  background: #293c27;
+  color: #d3dfbf;
+}
+:root[data-theme="dark"] .club-success {
+  background: #354a2c;
+  color: #d7e6c6;
+}

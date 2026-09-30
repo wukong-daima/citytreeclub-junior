@@ -6,10 +6,12 @@
 - [x] GitHub 인증·빈 비공개 저장소·관리자 권한 확인
 - [x] GitHub Actions 검사 및 Cloudflare 배포 구성, 설정 안내 작성
 - [x] 서버 없이 타입·린트·단위 테스트·배포 빌드 검증 (21개 테스트 통과)
-- [ ] 비밀 정보 제외 후 요청한 GitHub 저장소에 커밋·푸시
+- [x] 비밀 정보 제외 후 요청한 GitHub 저장소에 커밋·푸시
 - [ ] GitHub 실행 결과 확인 및 실제 배포 URL 검증
 
 배포 설계: GitHub Pages는 정적 파일만 제공하므로 D1/R2와 서버 API가 필요한 전체 앱은 GitHub Actions → Cloudflare Workers로 배포한다. 저장소 공개 범위는 변경하지 않는다. Cloudflare 인증 및 저장소 배포 secret은 현재 없으므로 필요한 연결을 사용자에게 요청한다. 인증이 연결되기 전에는 배포 완료로 표시하지 않는다.
+
+진행: GitHub 최초 검증 실행 36664529738 성공. Cloudflare 기기 인증 CSRF 오류로 API 토큰 방식으로 전환. CLOUDFLARE_API_TOKEN과 CLOUDFLARE_ACCOUNT_ID 등록 확인. 토큰 값을 출력하지 않는 읽기 전용 연결 검사로 권한과 리소스 준비 여부를 확인한다.
 
 ## 시티트리클럽 주니어 확장 (2026-09-30)
 

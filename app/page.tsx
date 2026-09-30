@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
+import { localFetch } from "../lib/local-api";
+import { BackupControls } from "./backup-controls";
 import { TreeArt } from "./tree-art";
 import { growth } from "../lib/domain";
 import { JuniorGarden, Tutorial, CelebrationToast } from "./junior-garden";
@@ -37,7 +38,7 @@ const events = [
     desc: "관찰이 쌓이면, 소중한 친구에게 이름을 선물해요.",
     icon: "⌑",
     color: "peach",
-    condition: "100 돌봄 포인트 + 응모·관리자 승인",
+    condition: "100 돌봄 포인트 + 이 기기의 체험 신청",
     detail:
       "관리 주체가 승인한 위치의 독립 안내대에만 이름표를 설치합니다. 나무에 못·접착제·철사를 사용하지 않으며, 설치 후 7일 안에 회수하는 운영안을 제안합니다. 아직 확정된 현장 행사는 아닙니다.",
   },
@@ -92,7 +93,9 @@ export default function Home() {
     setTrees([]);
     setSelected(null);
     try {
-      const res = await fetch(`/api/trees?lat=${lat}&lng=${lng}&radius=${r}`);
+      const res = await localFetch(
+        `/api/trees?lat=${lat}&lng=${lng}&radius=${r}`,
+      );
       const data = (await res.json()) as { trees: Tree[]; error?: string };
       if (!res.ok) throw Error(data.error);
       if (id === searchId.current) setTrees(data.trees);
@@ -106,7 +109,7 @@ export default function Home() {
     }
   }
   useEffect(() => {
-    fetch("/api/garden")
+    localFetch("/api/garden")
       .then((r) => {
         if (!r.ok) throw Error("정원을 불러오지 못했어요. 새로고침해 주세요.");
         return r.json() as Promise<Garden>;
@@ -117,7 +120,7 @@ export default function Home() {
       })
       .catch((e) => setMessage(e.message))
       .finally(() => setLoaded(true));
-    fetch("/api/trees?lat=37.5445&lng=127.0374&radius=500")
+    localFetch("/api/trees?lat=37.5445&lng=127.0374&radius=500")
       .then((r) => r.json() as Promise<{ trees: Tree[] }>)
       .then((d) => {
         if (searchId.current === 0) setTrees(d.trees ?? []);
@@ -130,7 +133,7 @@ export default function Home() {
   ): Promise<Garden | null> {
     setBusy(true);
     try {
-      const res = await fetch("/api/garden", {
+      const res = await localFetch("/api/garden", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ...extra }),
@@ -149,7 +152,7 @@ export default function Home() {
           note: "우리의 오늘을 기록했어요",
           decorate: "나무의 새 모습을 만나보세요",
           interest: "함께할 활동에 마음을 남겼어요",
-          "physical-apply": "나무에게 보낼 마음, 응모했어요!",
+          "physical-apply": "이 기기에 체험 신청을 저장했어요!",
           "tutorial-complete": "첫 돌봄 여행을 마쳤어요!",
         };
         setEffect({
@@ -228,7 +231,7 @@ export default function Home() {
       );
   }
   async function refreshGarden() {
-    const r = await fetch("/api/garden");
+    const r = await localFetch("/api/garden");
     if (!r.ok) throw Error("정원 상태를 불러오지 못했어요.");
     setGarden((await r.json()) as Garden);
   }
@@ -240,17 +243,18 @@ export default function Home() {
   };
   return (
     <>
+      <BackupControls />
       <div className="announcement">
         서울환경연합과 함께하는 팀 나무늘보 · 작은 관심으로 자라는 시티트리클럽
         주니어 <span>↗</span>
       </div>
       <header className="site-header">
-        <Link className="brand" href="/" aria-label="시티트리클럽 주니어 홈">
+        <a className="brand" href="./" aria-label="시티트리클럽 주니어 홈">
           <span className="brand-mark">♧</span>
           <span>
             시티트리클럽 주니어<small>CITY TREE CLUB JUNIOR</small>
           </span>
-        </Link>
+        </a>
         <nav aria-label="주 메뉴">
           <button
             className={tab === "discover" ? "active" : ""}
@@ -642,11 +646,11 @@ export default function Home() {
             <h2>나무 곁에, 우리의 마음을 걸어요.</h2>
             <p>
               이름표부터 감사의 말, 특별한 고백까지. 포인트를 모아 1·3·7일의
-              추억에 응모하세요.
+              추억을 기획해 보세요. 체험 신청은 이 기기에만 저장돼요.
             </p>
           </div>
           <button className="primary" onClick={() => setModal("physical")}>
-            실물 이벤트 응모 ↗
+            이벤트 체험 신청 ↗
           </button>
         </section>
         <section className="events-section" id="events">
@@ -720,9 +724,9 @@ export default function Home() {
         </section>
       </main>
       <footer>
-        <Link className="brand" href="/">
+        <a className="brand" href="./">
           ♧ 시티트리클럽 주니어
-        </Link>
+        </a>
         <p>나무와 나 사이, 조금 더 가까이.</p>
         <div>
           <a
@@ -809,8 +813,8 @@ export default function Home() {
                 <h2 id="modal-title">내 정원의 작은 취향</h2>
                 <p>
                   30 XP부터 가상 정원을 꾸밀 수 있어요. 실제 나무의
-                  이름표·메시지·장식은 100 돌봄 포인트를 모아 기간 한정 이벤트에
-                  응모해 주세요.
+                  이름표·메시지·장식은 100 돌봄 포인트를 모아 이벤트 체험으로
+                  기획해 보세요. 운영자에게 신청이 전송되지 않습니다.
                 </p>
                 <div className="decoration-grid">
                   {[
@@ -857,9 +861,9 @@ export default function Home() {
               <>
                 <h2 id="modal-title">우리의 기록에 관하여</h2>
                 <p>
-                  계정 없이 이 브라우저의 익명 쿠키로 정원과 활동 기록을 서버에
-                  저장합니다. 쿠키를 지우거나 다른 기기로 접속하면 기존 정원에
-                  접근할 수 없습니다.
+                  계정 없이 이 브라우저에 정원·사진·활동 기록을 저장합니다. 다른
+                  기기와 자동 동기화되지 않습니다. 브라우저 데이터를 삭제하기
+                  전에 백업을 내보내 주세요.
                 </p>
                 <p>
                   현재 위치는 검색을 요청할 때만 사용하며 나무 검색 좌표를
@@ -867,10 +871,10 @@ export default function Home() {
                   개인정보를 적지 마세요.
                 </p>
                 <p>
-                  이 버전은 샘플 나무 체험판입니다. 실제 나무 데이터,
-                  카카오·구글 로그인과 현장 이벤트 운영은 후속 연결이
-                  필요합니다. 사진·관찰 기록과 댓글은 선택한 공개 범위로 서버에
-                  저장하며, 내 정보에서 데이터를 삭제할 수 있습니다.
+                  이 버전은 샘플 나무를 이용하는 개인 체험판입니다. 사진과 관찰
+                  기록은 공개되지 않으며, 내 정보에서 이 브라우저의 데이터를
+                  삭제할 수 있습니다. 체험 신청과 나무 메모는 운영기관에
+                  전송되지 않습니다.
                 </p>
               </>
             ) : (

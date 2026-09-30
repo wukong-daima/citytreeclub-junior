@@ -6,9 +6,8 @@ interface __BaseEnv_Env {
   DB: D1Database;
 }
 declare namespace Cloudflare {
-  interface GlobalProps {
-    mainModule: typeof import("./worker/index");
-  }
+  // Historical server types only; no Worker entry is part of the static app.
+  interface GlobalProps {}
   interface Env extends __BaseEnv_Env {}
 }
 interface Env extends __BaseEnv_Env {}

@@ -1,15 +1,8 @@
-import vinext from "vinext";
 import { defineConfig } from "vite";
-import { cloudflare } from "@cloudflare/vite-plugin";
-import { sites } from "./build/sites-vite-plugin";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [
-    vinext(),
-    sites(),
-    cloudflare({
-      viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-      configPath: process.env.DEPLOY_CONFIG || "wrangler.jsonc",
-    }),
-  ],
+  base: "/citytreeclub-junior/",
+  plugins: [react()],
+  build: { outDir: "dist", emptyOutDir: true },
 });

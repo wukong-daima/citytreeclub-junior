@@ -60,15 +60,14 @@ export function PhysicalEvents({
       <p className="eyebrow">FROM OUR GARDEN TO THE REAL WORLD</p>
       <h2 id="modal-title">나무에 마음을 걸어두는 시간</h2>
       <p>
-        쌓아온 관심으로, 현실의 나무 곁에 작은 추억을 남겨요.
-        이름표·메시지·고백·장식을 <b>1·3·7일 동안</b> 전시하는 이벤트에 응모할
-        수 있어요.
+        이름표·메시지·고백·장식을 <b>1·3·7일 동안</b> 전시하는 계획을 세워요. 이
+        기기에만 저장되는 체험 신청이며 운영자에게 접수되지 않아요.
       </p>
       <div className="physical-points">
         <span>🍃 누적 돌봄 포인트</span>
         <b>{garden.points ?? 0} / 100 P</b>
         <progress value={Math.min(garden.points ?? 0, 100)} max={100} />
-        <small>100 P부터 응모 · 포인트 차감 없음 · 종류별 1회</small>
+        <small>100 P부터 체험 신청 · 포인트 차감 없음 · 종류별 1회</small>
       </div>
       <div className="physical-kinds">
         {kinds.map((k) => (
@@ -145,10 +144,10 @@ export function PhysicalEvents({
         <div className="physical-rules">
           <b>나무를 아끼는 약속</b>
           <p>
-            응모 → 운영자 심사·선정 → 관리 주체 허가 → 설치 → 기한 내 회수
-            순서로 진행해요. 나무에 못·철사·접착제를 사용하지 않아요. 전문가가
-            수피·생육에 지장이 없다고 승인한 경우에만 임시 설치하고, 부착이
-            적합하지 않으면 나무 곁 독립 안내대를 이용해요.
+            실제 전시는 별도로 관리 주체의 허가를 받고 기한 내 회수해야 해요. 이
+            앱에서 심사·선정은 진행하지 않아요. 나무에 못·철사·접착제를 사용하지
+            않아요. 전문가가 수피·생육에 지장이 없다고 승인한 경우에만 임시
+            설치하고, 부착이 적합하지 않으면 나무 곁 독립 안내대를 이용해요.
           </p>
         </div>
         <label className="consent">
@@ -159,7 +158,7 @@ export function PhysicalEvents({
             onChange={(e) => setConsent(e.target.checked)}
           />
           <span>
-            내용이 전시될 수 있음을 이해했으며, 제3자의 실명·연락처는 적지
+            이 기기에만 저장되는 체험임을 이해했으며, 제3자의 실명·연락처는 적지
             않았어요. 고백 이벤트는 상대방의 사전 동의 후 진행하고, 승인된
             기간·방식·회수 약속을 지킬게요.
           </span>
@@ -171,16 +170,15 @@ export function PhysicalEvents({
           }
         >
           {existing
-            ? "이미 응모했어요 · 심사 대기"
+            ? "이 기기에 체험 신청을 저장했어요"
             : (garden.points ?? 0) < 100
-              ? `${100 - (garden.points ?? 0)} P를 더 모으면 응모할 수 있어요`
-              : "기간 한정 실물 이벤트 응모 💌"}
+              ? `${100 - (garden.points ?? 0)} P를 더 모으면 체험할 수 있어요`
+              : "이 기기에 체험 신청 저장 💌"}
         </button>
         {garden.tree?.sample && (
           <p className="care-note">
-            현재는 샘플 나무여서 체험 응모로 저장됩니다. 실제 설치나 당첨을
-            확정하지 않으며, 실제 행사 일정과 관리 주체가 연결되면 운영자의 별도
-            승인으로 진행해야 합니다.
+            현재 나무는 샘플입니다. 신청은 이 기기에만 저장되며 운영자에게
+            전달되지 않습니다. 실제 설치·추첨·승인은 진행되지 않습니다.
           </p>
         )}
       </form>
@@ -190,11 +188,7 @@ export function PhysicalEvents({
           {garden.applications.map((a) => (
             <article key={a.id}>
               <b>{kinds.find((k) => k.id === a.kind)?.name}</b>
-              <span>
-                {a.status === "demo_pending"
-                  ? "체험 응모 접수"
-                  : "운영자 심사 대기"}
-              </span>
+              <span>이 기기에 체험 저장 · 운영자 미전송</span>
               <p>{a.message}</p>
               <small>
                 {TREES.find((tree) => tree.id === a.treeId)?.name ||

@@ -1,0 +1,19 @@
+.local-storage-notice {
+  padding: 14px max(20px, calc((100% - 1180px) / 2));
+  background: var(--surface, #f0f3e9);
+  color: var(--ink, #243d31);
+  border-bottom: 1px solid #b9c8b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.local-storage-notice p {
+  margin: 0 0 8px;
+}
+.local-storage-notice .outline {
+  padding: 7px 12px;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.local-storage-notice small {
+  display: block;
+}

@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
+import { localFetch } from "../lib/local-api";
 import { TREES } from "../lib/trees";
 import type { Tree } from "./garden-types";
 import "./club.css";
 import { TreeReport } from "./tree-report";
 import { uploadObservationPhoto, type PhotoStyle } from "./photo-upload";
+import { saveWithPhoto } from "./photo-save";
+import { clubText } from "../lib/club";
 type RecordItem = {
   id: string;
   treeId: string;
@@ -102,7 +104,7 @@ export function Club({
     [radius, setRadius] = useState(500);
   useEffect(() => {
     let live = true;
-    fetch("/api/club")
+    localFetch("/api/club")
       .then(async (r) => {
         const d = (await r.json()) as ClubState & { error?: string };
         if (!r.ok) throw Error(d.error);
@@ -134,7 +136,7 @@ export function Club({
     setBusy(true);
     setError("");
     try {
-      const r = await fetch("/api/club", {
+      const r = await localFetch("/api/club", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action, ...extra }),
@@ -182,7 +184,7 @@ export function Club({
         <div>
           <p className="eyebrow">CITY TREE CLUB · OUR NEIGHBORHOOD</p>
           <h3>나의 나무에서, 우리 동네 숲으로</h3>
-          <p>친구를 더 만나고, 나무의 안부를 이웃과 나눠요.</p>
+          <p>나무 친구를 더 만나고, 나만의 관찰장에 안부를 남겨요.</p>
         </div>
         <span>🌳</span>
       </div>
@@ -190,9 +192,9 @@ export function Club({
         {[
           ["mine", `내 나무 ${state.myTrees.length}/5`],
           ["favorites", `관심나무 ${state.favorites.length}`],
-          ["records", "우리의 기록"],
+          ["records", "개인 관찰장"],
           ["notifications", `알림 ${unread}`],
-          ["reports", "나무 제보"],
+          ["reports", "나무 메모"],
           ["profile", "내 정보"],
         ].map(([id, label]) => (
           <button
@@ -396,7 +398,7 @@ export function Club({
             <>
               <div className="club-section-title">
                 <h4>나무의 안부가 모이는 곳</h4>
-                <span>최근 100개 · 내 비공개 기록과 모두의 공개 기록</span>
+                <span>최근 100개 · 이 브라우저에 저장한 나의 기록</span>
               </div>
               {!state.records.length && (
                 <p className="empty">
@@ -542,7 +544,7 @@ export function Club({
                   />
                 </label>
                 <button className="outline" disabled={busy}>
-                  제보 접수
+                  개인 메모 저장
                 </button>
               </form>
               <div className="report-status">
@@ -573,7 +575,7 @@ export function Club({
             </h2>
             <p>
               {confirm === "account"
-                ? "정원·사진·댓글·신청을 삭제하고 현재 브라우저의 연결을 해제합니다. 복구할 수 없어요. 아래에 ‘삭제’를 입력해 주세요."
+                ? "이 브라우저의 정원·사진·관찰 기록·체험 신청을 모두 삭제합니다. 백업 파일 없이는 복구할 수 없어요. 아래에 ‘삭제’를 입력해 주세요."
                 : "내 나무 목록에서 제외합니다. 기존 관찰 기록은 보관되고, 새 친구를 만날 자리가 생겨요."}
             </p>
             {confirm === "account" && (
@@ -706,17 +708,14 @@ function Profile({
         )}
       </form>
       <div className="account-mode">
-        <b>현재: 이 브라우저의 체험 계정</b>
+        <b>현재: 이 브라우저의 개인 관찰장</b>
         <p>
-          카카오·구글 로그인은 서비스 앱 등록과 인증키 연결이 필요합니다. 현재는
-          이 브라우저의 익명 쿠키로 저장되며, 다른 기기 로그인이나 쿠키 삭제 후
-          복구는 제공하지 않습니다.
+          정원과 사진은 이 브라우저에만 저장되며 다른 기기와 자동 동기화되지
+          않습니다. 데이터를 지우기 전에 화면 위에서 백업을 내보내 주세요.
         </p>
-        <span>카카오 로그인 · 연결 준비 중</span>
-        <span>Google 로그인 · 연결 준비 중</span>
       </div>
       <button className="delete-account" onClick={onDelete}>
-        체험 계정 탈퇴 및 내 데이터 삭제
+        이 브라우저의 내 데이터 모두 삭제
       </button>
     </div>
   );
@@ -735,49 +734,13 @@ function RecordCard({
   busy: boolean;
   onMutate: Mutate;
 }) {
-  const [text, setText] = useState(""),
-    [edit, setEdit] = useState(false),
-    [draft, setDraft] = useState(record.text),
-    [notice, setNotice] = useState(""),
-    [photo, setPhoto] = useState<File | null>(null),
-    [uploading, setUploading] = useState(false);
-  async function share() {
-    const url = new URL("/", window.location.origin);
-    url.hash = `record=${record.id}`;
-    try {
-      await navigator.clipboard.writeText(url.toString());
-      setNotice("기록 링크를 복사했어요.");
-    } catch {
-      setNotice(url.toString());
-    }
-  }
-  async function comment() {
-    setUploading(true);
-    setNotice("");
-    try {
-      const photoKey = photo ? await uploadObservationPhoto(photo) : undefined;
-      const ok = await onMutate("comment", {
-        recordId: record.id,
-        text,
-        ...(photoKey ? { photoKey } : {}),
-      });
-      if (ok) {
-        setText("");
-        setPhoto(null);
-      }
-    } catch (e) {
-      setNotice(e instanceof Error ? e.message : "저장하지 못했어요.");
-    } finally {
-      setUploading(false);
-    }
-  }
+  const [edit, setEdit] = useState(false),
+    [draft, setDraft] = useState(record.text);
   return (
     <article className="record-card" id={`record-${record.id}`}>
       <div className="record-card-heading">
         <b>{record.author || "나무 친구"}</b>
-        <span>
-          {record.visibility === "public" ? "동네 공개" : "나만 보기"}
-        </span>
+        <span>이 브라우저에만 보관</span>
         <small>{new Date(record.createdAt).toLocaleDateString("ko-KR")}</small>
       </div>
       <h4>
@@ -785,8 +748,7 @@ function RecordCard({
       </h4>
       {record.photoUrl && (
         <>
-          <Image
-            unoptimized
+          <img
             src={record.photoUrl}
             alt="나무 관찰 사진"
             width={640}
@@ -843,18 +805,6 @@ function RecordCard({
         {record.girth && <span>둘레 {record.girth}cm</span>}
       </div>
       <div className="record-card-tools">
-        {record.visibility === "public" && (
-          <>
-            <button
-              className={record.liked ? "liked" : ""}
-              disabled={busy}
-              onClick={() => void onMutate("like", { recordId: record.id })}
-            >
-              {record.liked ? "♥" : "♡"} {record.likeCount || 0}
-            </button>
-            <button onClick={() => void share()}>링크 공유 ↗</button>
-          </>
-        )}
         {record.mine && (
           <>
             <button
@@ -870,7 +820,7 @@ function RecordCard({
               onClick={() => {
                 if (
                   window.confirm(
-                    "관찰 기록과 댓글을 삭제할까요? 복구할 수 없어요.",
+                    "관찰 기록을 삭제할까요? 백업 없이는 복구할 수 없어요.",
                   )
                 )
                   void onMutate("delete-record", { recordId: record.id });
@@ -881,135 +831,9 @@ function RecordCard({
           </>
         )}
       </div>
-      {notice && (
-        <p className="inline-notice" role="status">
-          {notice}
-        </p>
-      )}
-      <div className="comments">
-        {record.comments.map((c) => (
-          <Comment key={c.id} comment={c} busy={busy} onMutate={onMutate} />
-        ))}
-      </div>
-      {record.visibility === "public" && (
-        <>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void comment();
-            }}
-          >
-            <label className="sr-only" htmlFor={`comment-${record.id}`}>
-              댓글
-            </label>
-            <input
-              id={`comment-${record.id}`}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="따뜻한 한마디를 남겨주세요"
-              minLength={2}
-              maxLength={300}
-              required
-            />
-            <button disabled={busy || uploading}>
-              {uploading ? "저장 중" : "남기기"}
-            </button>
-          </form>
-          <label className="comment-photo">
-            사진 첨부 · 3MB 이하
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => setPhoto(e.target.files?.[0] ?? null)}
-            />
-            {photo && <span>{photo.name}</span>}
-          </label>
-        </>
-      )}
     </article>
   );
 }
-function Comment({
-  comment,
-  busy,
-  onMutate,
-}: {
-  comment: RecordItem["comments"][number];
-  busy: boolean;
-  onMutate: Mutate;
-}) {
-  const [editing, setEditing] = useState(false),
-    [text, setText] = useState(comment.text);
-  return (
-    <div>
-      <b>{comment.author || "나무 친구"}</b>
-      {editing ? (
-        <div className="inline-edit">
-          <textarea
-            aria-label="댓글 수정"
-            value={text}
-            maxLength={300}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <button
-            disabled={busy || !text.trim()}
-            onClick={() =>
-              void onMutate("edit-comment", {
-                commentId: comment.id,
-                text,
-              }).then((ok) => {
-                if (ok) setEditing(false);
-              })
-            }
-          >
-            저장
-          </button>
-          <button onClick={() => setEditing(false)}>취소</button>
-        </div>
-      ) : (
-        <p>{comment.text}</p>
-      )}
-      {comment.photoUrl && (
-        <Image
-          unoptimized
-          width={320}
-          height={200}
-          src={comment.photoUrl}
-          alt="댓글에 첨부한 나무 사진"
-          className="comment-image"
-        />
-      )}
-      {comment.mine && (
-        <div className="record-card-tools">
-          <button onClick={() => setEditing(true)}>수정</button>
-          {comment.photoUrl && (
-            <button
-              disabled={busy}
-              onClick={() => {
-                if (window.confirm("첨부 사진을 삭제할까요?"))
-                  void onMutate("delete-comment-photo", {
-                    commentId: comment.id,
-                  });
-              }}
-            >
-              사진 삭제
-            </button>
-          )}
-          <button
-            disabled={busy}
-            onClick={() => {
-              if (window.confirm("댓글을 삭제할까요?"))
-                void onMutate("delete-comment", { commentId: comment.id });
-            }}
-          >
-            삭제
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function RecordWizard({
   tree,
   previous,
@@ -1036,7 +860,6 @@ function RecordWizard({
     ),
     [size, setSize] = useState(previous?.size || "medium"),
     [text, setText] = useState(""),
-    [visibility, setVisibility] = useState("private"),
     [photo, setPhoto] = useState<File | null>(null),
     [uploading, setUploading] = useState(false),
     [error, setError] = useState(""),
@@ -1060,19 +883,24 @@ function RecordWizard({
         (owned && (!nickname.trim() || nickname.trim().length > 16))
       )
         throw Error("수종(1~30자)과 애칭(1~16자)을 확인해 주세요.");
-      let photoKey: string | undefined;
-      if (photo) photoKey = await uploadObservationPhoto(photo, photoStyle);
-      const saved = await onSubmit({
-        treeId: tree.id,
-        species,
-        ...(owned ? { nickname } : {}),
-        health,
-        girth: girth ? Number(girth) : null,
-        size,
-        text,
-        visibility,
-        ...(photoKey ? { photoKey } : {}),
-      });
+      if (!clubText(text, 2, 1000))
+        throw Error("관찰 내용은 공백을 제외하고 2~1000자로 적어 주세요.");
+      const saved = await saveWithPhoto(
+        async () =>
+          photo ? uploadObservationPhoto(photo, photoStyle) : undefined,
+        (photoKey) =>
+          onSubmit({
+            treeId: tree.id,
+            species,
+            ...(owned ? { nickname } : {}),
+            health,
+            girth: girth ? Number(girth) : null,
+            size,
+            text,
+            visibility: "private",
+            ...(photoKey ? { photoKey } : {}),
+          }),
+      );
       if (!saved)
         setError(
           "관찰 기록을 저장하지 못했어요. 입력 내용과 연결을 확인하고 다시 시도해 주세요.",
@@ -1226,16 +1054,9 @@ function RecordWizard({
                 </select>
               </label>
             )}
-            <label className="wizard-field">
-              공개 범위
-              <select
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value)}
-              >
-                <option value="private">나만 보기</option>
-                <option value="public">동네에 공개 · 댓글 허용</option>
-              </select>
-            </label>
+            <p className="care-note">
+              이 관찰 기록과 사진은 이 브라우저에만 저장돼요.
+            </p>
             <p className="care-note">
               사진은 최대 1200px로 줄이고 위치 메타데이터를 제거해 저장합니다.
               사진에 보이는 얼굴·차량번호 등은 올리기 전에 확인해 주세요.

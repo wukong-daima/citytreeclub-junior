@@ -269,8 +269,8 @@ export function JuniorGarden({
                   <b>현실의 나무에도 마음을 전해요</b>
                   <small>
                     {garden.points >= 100
-                      ? "100 P 달성! 기간 한정 이벤트에 응모해 보세요"
-                      : `실물 이벤트 응모까지 ${Math.max(0, 100 - garden.points)} P`}
+                      ? "100 P 달성! 이벤트 신청을 체험해 보세요"
+                      : `이벤트 신청 체험까지 ${Math.max(0, 100 - garden.points)} P`}
                   </small>
                 </span>
                 <span>↗</span>
@@ -351,7 +351,7 @@ export function Tutorial({
     "내 나무 아래에 애칭을 적어주세요. 첫 이름을 선물하면 10 XP를 받아요.",
     "‘물 주기’를 눌러보세요. 물뿌리개가 움직이고 경험치도 쌓여요.",
     "내 나무 아래 미니게임에서 표시된 곳 5개를 돌봐주세요. 종류별 하루 25 XP!",
-    "100 돌봄 포인트가 모이면 실물 이름표·메시지·고백 이벤트에 응모할 수 있어요.",
+    "100 돌봄 포인트가 모이면 이름표·메시지 이벤트 신청을 체험해요. 이 기기에만 저장되고 실제 접수되지는 않아요.",
   ];
   return (
     <aside className="tutorial-panel">

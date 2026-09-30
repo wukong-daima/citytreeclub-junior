@@ -1,8 +1,9 @@
 "use client";
 import { useState } from "react";
 import { TREES } from "../lib/trees";
-import { HEALTH_INDICATORS } from "../lib/club";
+import { HEALTH_INDICATORS, clubText } from "../lib/club";
 import { uploadObservationPhoto } from "./photo-upload";
+import { saveWithPhoto } from "./photo-save";
 export function TreeReport({
   busy,
   onSubmit,
@@ -30,30 +31,37 @@ export function TreeReport({
       setError("현장 사진을 선택해 주세요.");
       return;
     }
+    if (!clubText(text, 2, 1000)) {
+      setError("설명은 공백을 제외하고 2~1000자로 적어 주세요.");
+      return;
+    }
     setUploading(true);
     try {
-      const photoKey = await uploadObservationPhoto(photo);
-      const ok = await onSubmit({
-        kind,
-        treeId: kind === "removal" ? treeId : undefined,
-        lat:
-          kind === "removal"
-            ? TREES.find((t) => t.id === treeId)!.lat
-            : Number(lat),
-        lng:
-          kind === "removal"
-            ? TREES.find((t) => t.id === treeId)!.lng
-            : Number(lng),
-        species:
-          kind === "removal"
-            ? TREES.find((t) => t.id === treeId)!.species
-            : species.trim() || "모름",
-        health,
-        girth: girth ? Number(girth) : null,
-        size,
-        text,
-        photoKey,
-      });
+      const ok = await saveWithPhoto(
+        () => uploadObservationPhoto(photo),
+        (photoKey) =>
+          onSubmit({
+            kind,
+            treeId: kind === "removal" ? treeId : undefined,
+            lat:
+              kind === "removal"
+                ? TREES.find((t) => t.id === treeId)!.lat
+                : Number(lat),
+            lng:
+              kind === "removal"
+                ? TREES.find((t) => t.id === treeId)!.lng
+                : Number(lng),
+            species:
+              kind === "removal"
+                ? TREES.find((t) => t.id === treeId)!.species
+                : species.trim() || "모름",
+            health,
+            girth: girth ? Number(girth) : null,
+            size,
+            text,
+            photoKey,
+          }),
+      );
       if (ok) {
         setSubmitted(true);
         setText("");
@@ -68,7 +76,7 @@ export function TreeReport({
     <section className="tree-report">
       <div className="club-section-title">
         <h4>지도 밖의 나무도, 사라진 나무도</h4>
-        <span>운영자 검토를 위한 시민 제보</span>
+        <span>이 브라우저에만 저장하는 개인 나무 메모</span>
       </div>
       <div className="report-kind">
         <button
@@ -205,9 +213,8 @@ export function TreeReport({
           <small>원본 15MB 이하 · 저장 시 크기 축소·위치 메타데이터 제거</small>
         </label>
         <p className="care-note">
-          제보는 체험 서버에 검토 대기로 저장됩니다. 현재 운영기관에 자동
-          전송되거나 지도에 자동 반영되지 않습니다. 위험한 현장에는 접근하지
-          마세요.
+          사진과 메모는 이 브라우저에만 저장됩니다. 운영기관에 전송되거나 지도에
+          자동 반영되지 않습니다. 위험한 현장에는 접근하지 마세요.
         </p>
         {error && (
           <p className="club-error" role="alert">
@@ -216,11 +223,11 @@ export function TreeReport({
         )}
         {submitted && (
           <p className="saved-note" role="status">
-            사진과 제보를 저장했어요. 검토 대기 중입니다 ✓
+            사진과 메모를 이 브라우저에 저장했어요 ✓
           </p>
         )}
         <button className="primary" disabled={busy || uploading}>
-          {uploading ? "사진을 저장하고 있어요…" : "제보 남기기 ↗"}
+          {uploading ? "사진을 저장하고 있어요…" : "개인 메모 남기기 ↗"}
         </button>
       </form>
     </section>

@@ -1,3 +1,4 @@
+import { localFetch } from "../lib/local-api";
 export type PhotoStyle = "natural" | "mono" | "warm";
 /** Re-encode in the browser to bound dimensions and discard original EXIF metadata. */
 export async function uploadObservationPhoto(
@@ -43,7 +44,7 @@ export async function uploadObservationPhoto(
     );
   const body = new FormData();
   body.set("photo", blob, "tree-observation.jpg");
-  const response = await fetch("/api/photos", { method: "POST", body });
+  const response = await localFetch("/api/photos", { method: "POST", body });
   const data = (await response.json()) as { photoKey: string; error?: string };
   if (!response.ok) throw Error(data.error || "사진을 업로드하지 못했어요.");
   return data.photoKey;

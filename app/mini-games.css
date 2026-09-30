@@ -333,3 +333,223 @@
     opacity: 0;
   }
 }
+.game-intro {
+  text-align: center;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--surface, #f2f6e8);
+  border-radius: 20px;
+}
+.game-intro h4 {
+  font-size: 24px;
+  margin: 0;
+}
+.game-intro p {
+  margin: 0;
+  line-height: 1.6;
+}
+.game-big-icon {
+  font-size: 60px;
+}
+.difficulty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+.difficulty select {
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--surface, #fffdf5);
+  color: inherit;
+}
+.game-readout,
+.game-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 0;
+  font-size: 14px;
+}
+.game-toolbar button,
+.soil-controls button {
+  min-height: 44px;
+  min-width: 44px;
+  border: 1px solid #b4c5a8;
+  border-radius: 12px;
+  background: var(--surface, #fffdf5);
+  color: inherit;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+.bug-field {
+  position: relative;
+  height: clamp(180px, 35dvh, 360px);
+  overflow: hidden;
+  border-radius: 22px;
+  background: linear-gradient(#d8efd5, #f7f0ce);
+}
+.game-tree {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: clamp(140px, 25dvh, 230px);
+  opacity: 0.8;
+}
+.moving-bug {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border: 2px solid #fff9;
+  border-radius: 50%;
+  font-size: 32px;
+  background: #fff9;
+  cursor: crosshair;
+  box-shadow: 0 3px 8px #213f2520;
+  touch-action: manipulation;
+}
+.moving-bug:focus-visible {
+  outline: 4px solid #285839;
+  outline-offset: 3px;
+}
+.prune-scene {
+  height: clamp(100px, 22dvh, 190px);
+  text-align: center;
+  font-size: clamp(80px, 19dvh, 160px);
+  position: relative;
+}
+.prune-scene span {
+  font-size: 45px;
+}
+.timing-track {
+  height: 40px;
+  background: #e9d7bd;
+  border: 2px solid #746b50;
+  border-radius: 12px;
+  position: relative;
+  margin: 16px 10px;
+  overflow: hidden;
+}
+.timing-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #76bd74;
+  border-left: 2px solid #2d6534;
+  border-right: 2px solid #2d6534;
+}
+.timing-cursor {
+  position: absolute;
+  width: 5px;
+  top: 0;
+  bottom: 0;
+  background: #273c29;
+  transform: translateX(-50%);
+}
+.timing-button {
+  display: block;
+  margin: 12px auto;
+  min-height: 48px;
+}
+.game-help {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted, #52654b);
+  margin: 10px 0;
+}
+.pause-notice {
+  padding: 8px;
+  background: #fff0bd;
+  border-radius: 10px;
+  color: #3e4425;
+}
+.soil-layout {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  align-items: flex-start;
+}
+.soil-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  height: clamp(180px, 40dvh, 360px);
+  aspect-ratio: 2/3;
+  background: #e8d9bd;
+  border: 4px solid #735b40;
+  gap: 1px;
+  padding: 2px;
+}
+.soil-cell {
+  background: #f5ead7;
+  min-height: 0;
+  min-width: 0;
+}
+.soil-cell.filled,
+.next-piece .filled {
+  background: #936942;
+  box-shadow:
+    inset 2px 2px #c89e70,
+    inset -2px -2px #674a31;
+  border-radius: 3px;
+}
+.soil-cell.falling {
+  background: #608d49;
+  box-shadow: inset 2px 2px #a0c680;
+  border-radius: 3px;
+}
+.next-piece {
+  display: grid;
+  grid-template-columns: repeat(4, 18px);
+  grid-template-rows: repeat(4, 18px);
+  gap: 2px;
+  margin: 8px 0;
+}
+.soil-layout aside {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.soil-controls {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+@media (max-width: 700px) {
+  .app-screen .mini-games {
+    padding: 0;
+  }
+  .mini-games-heading .eyebrow {
+    display: none;
+  }
+  .game-intro {
+    padding: 16px;
+  }
+  .game-intro h4 {
+    font-size: 20px;
+  }
+  .mini-games-heading h3 {
+    font-size: 18px;
+  }
+  .game-readout {
+    font-size: 12px;
+  }
+  .mini-game-tabs button {
+    padding: 8px 4px !important;
+  }
+  .mini-game-tabs small {
+    display: none;
+  }
+  .mini-game-tabs b {
+    font-size: 11px;
+  }
+  .game-help {
+    font-size: 11px;
+  }
+}

@@ -1,0 +1,286 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+body {
+  overflow: hidden;
+}
+.app-frame {
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--cream, #f7f5ed);
+  color: var(--ink, #233d2c);
+}
+.app-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 24px;
+  border-bottom: 1px solid #bdd0b7;
+  background: var(--surface, #fffdf5);
+}
+.app-topbar h1 {
+  font-size: 18px;
+  margin: 0;
+}
+.app-topbar button {
+  min-height: 44px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+.app-brand {
+  font-weight: 800;
+  font-size: 18px;
+}
+.app-screen {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.app-screen > main {
+  max-width: 1280px;
+  margin: auto;
+}
+.app-nav {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  border-top: 1px solid #c7d5bf;
+  background: var(--surface, #fffdf5);
+  padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+  z-index: 30;
+}
+.app-nav button {
+  display: flex;
+  flex: 1;
+  max-width: 180px;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  min-height: 52px;
+}
+.app-nav button span {
+  font-size: 22px;
+}
+.app-nav button[aria-current] {
+  background: #254f37;
+  color: #fff;
+}
+.app-screen .experience {
+  padding: 18px 28px;
+  margin: 0;
+}
+.app-screen .experience > .section-heading,
+.app-screen .tabs {
+  display: none;
+}
+.app-screen .discovery {
+  margin-top: 12px;
+}
+.app-screen .search-panel {
+  padding: 20px;
+}
+.app-screen .physical-banner,
+.app-screen .events-section,
+.app-screen .manifesto {
+  margin: 0;
+  padding: 24px;
+}
+.app-screen .hero {
+  min-height: 0;
+  padding: 25px;
+}
+.app-screen footer {
+  padding: 20px;
+}
+.app-screen .garden-view {
+  min-height: 0;
+}
+.app-screen .garden-scene {
+  min-height: 270px;
+}
+.app-screen .effort-dashboard {
+  margin-top: 12px;
+}
+.app-screen .tutorial-card {
+  margin: 0 0 12px;
+}
+.app-screen .tutorial-panel {
+  margin: 0 0 10px;
+  padding: 10px 14px;
+}
+.app-screen .garden-controls {
+  padding: 18px;
+}
+.app-screen .garden-controls > p:not(.care-note) {
+  display: none;
+}
+.app-screen .physical-shortcut {
+  display: none;
+}
+.app-screen .garden-scene .living-tree,
+.app-screen .garden-scene .living-tree > svg {
+  height: clamp(120px, 25dvh, 250px);
+}
+.app-screen .garden-controls h3 {
+  font-size: 21px;
+  margin: 8px 0;
+}
+.app-screen .care-actions {
+  margin: 10px 0;
+}
+.app-screen .garden-scene {
+  padding: 16px;
+}
+.app-screen .name-form {
+  margin-top: 10px;
+}
+.app-screen .search-panel > p {
+  margin: 8px 0;
+}
+.app-screen .search-panel .match-note {
+  margin: 12px 0;
+}
+.app-screen .map-panel .tree-map {
+  height: clamp(200px, 32dvh, 380px);
+}
+.app-screen .nearby-list {
+  max-height: 180px;
+  overflow: auto;
+}
+@media (max-width: 700px) {
+  .app-screen .garden-view {
+    display: block;
+  }
+  .app-screen .garden-scene {
+    min-height: 0;
+    padding: 8px 12px;
+  }
+  .app-screen .garden-scene .living-tree,
+  .app-screen .garden-scene .living-tree > svg {
+    height: 110px;
+  }
+  .app-screen .scene-label,
+  .app-screen .garden-controls > .step-label,
+  .app-screen .garden-controls > h3 {
+    display: none;
+  }
+  .app-screen .garden-scene > p {
+    margin: 2px;
+  }
+  .app-screen .garden-controls {
+    padding: 10px 12px;
+  }
+  .app-screen .care-actions button {
+    padding: 8px;
+  }
+  .app-screen .tutorial-panel p,
+  .app-screen .tutorial-sloth {
+    display: none;
+  }
+  .app-screen .tutorial-panel {
+    padding: 8px;
+    gap: 8px;
+  }
+  .app-screen .tutorial-panel .outline {
+    min-height: 44px;
+  }
+  .app-screen .mini-games-heading {
+    gap: 6px;
+  }
+  .app-screen .mini-xp-badge {
+    font-size: 10px;
+    padding: 6px;
+  }
+}
+.screen-actions,
+.page-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+}
+.page-controls button,
+.screen-actions button {
+  min-height: 44px;
+  padding: 8px 18px;
+  border: 1px solid #b5c5ad;
+  border-radius: 12px;
+  background: var(--surface, #fffdf5);
+  color: inherit;
+  cursor: pointer;
+}
+.mobile-steps {
+  display: none;
+}
+.app-screen .mini-games {
+  margin: 0;
+  border: 0;
+}
+@media (max-width: 700px) {
+  .app-topbar {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+  .app-brand {
+    font-size: 16px;
+  }
+  .app-brand span {
+    display: none;
+  }
+  .app-topbar h1 {
+    font-size: 16px;
+  }
+  .app-nav {
+    gap: 0;
+    padding-left: 3px;
+    padding-right: 3px;
+  }
+  .app-nav button {
+    font-size: 11px;
+    padding: 5px;
+  }
+  .app-screen .experience {
+    padding: 12px;
+  }
+  .mobile-steps {
+    display: flex;
+  }
+  .discovery[data-step="0"] .map-panel {
+    display: none;
+  }
+  .discovery[data-step="1"] .search-panel {
+    display: none;
+  }
+  .app-screen .discovery {
+    display: block;
+  }
+  .app-screen .map-panel {
+    min-width: 0;
+  }
+  .app-screen .event-grid {
+    grid-template-columns: 1fr;
+  }
+  .app-screen .hero-art {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-frame * {
+    scroll-behavior: auto !important;
+  }
+}

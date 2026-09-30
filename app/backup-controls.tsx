@@ -6,6 +6,12 @@ export function BackupControls() {
   const fileInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  const toggle = useRef<HTMLButtonElement>(null);
+  function close() {
+    setOpen(false);
+    toggle.current?.focus();
+  }
   async function shareSite() {
     const url = new URL(window.location.href);
     url.hash = "";
@@ -69,46 +75,71 @@ export function BackupControls() {
     }
   }
   return (
-    <aside className="local-storage-notice" aria-label="개인 기록 보관과 백업">
-      <p>
-        <b>이 브라우저만의 나무 관찰장</b> · 기록과 사진은 이 브라우저에만
-        저장돼요. 다른 기기와 동기화되지 않으며, 브라우저 데이터를 지우기 전에
-        백업해 주세요.
-      </p>
-      <div>
+    <aside
+      className="backup-dock"
+      aria-label="개인 기록 보관과 백업"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") close();
+      }}
+    >
+      <button
+        ref={toggle}
+        className="backup-toggle"
+        aria-label="기록 보관함"
+        aria-expanded={open}
+        aria-controls="backup-panel"
+        onClick={() => setOpen(!open)}
+      >
+        ▣ <span>기록 보관함</span>
+      </button>
+      <div id="backup-panel" className="local-storage-notice" hidden={!open}>
         <button
-          className="outline"
-          disabled={busy}
-          onClick={() => void download()}
+          className="backup-close"
+          onClick={close}
+          aria-label="기록 보관함 닫기"
         >
-          백업 내보내기
-        </button>{" "}
-        <button
-          className="outline"
-          disabled={busy}
-          onClick={() => fileInput.current?.click()}
-        >
-          백업 가져오기
-        </button>{" "}
-        <button className="outline" onClick={() => void shareSite()}>
-          사이트 주소 공유
+          ×
         </button>
-        <input
-          ref={fileInput}
-          type="file"
-          accept=".json,application/json"
-          hidden
-          onChange={(event) => {
-            const file = event.target.files?.[0];
-            event.target.value = "";
-            void restore(file);
-          }}
-        />
+        <p>
+          <b>이 브라우저만의 나무 관찰장</b> · 기록과 사진은 이 브라우저에만
+          저장돼요. 다른 기기와 동기화되지 않으며, 브라우저 데이터를 지우기 전에
+          백업해 주세요.
+        </p>
+        <div>
+          <button
+            className="outline"
+            disabled={busy}
+            onClick={() => void download()}
+          >
+            백업 내보내기
+          </button>{" "}
+          <button
+            className="outline"
+            disabled={busy}
+            onClick={() => fileInput.current?.click()}
+          >
+            백업 가져오기
+          </button>{" "}
+          <button className="outline" onClick={() => void shareSite()}>
+            사이트 주소 공유
+          </button>
+          <input
+            ref={fileInput}
+            type="file"
+            accept=".json,application/json"
+            hidden
+            onChange={(event) => {
+              const file = event.target.files?.[0];
+              event.target.value = "";
+              void restore(file);
+            }}
+          />
+        </div>
+        <small>
+          백업에는 사진과 개인 기록이 포함되니 안전하게 보관해 주세요.
+        </small>
+        {message && <p role="status">{message}</p>}
       </div>
-      <small>
-        백업에는 사진과 개인 기록이 포함되니 안전하게 보관해 주세요.
-      </small>
-      {message && <p role="status">{message}</p>}
     </aside>
   );
 }

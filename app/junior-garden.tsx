@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { growth } from "../lib/domain";
 import { TreeArt } from "./tree-art";
-import { MiniGames } from "./mini-games";
 import type { Garden, Act, Celebration } from "./garden-types";
 
 export function CareEffect({ effect }: { effect: Celebration | null }) {
@@ -124,6 +123,7 @@ export function JuniorGarden({
   onDiscover,
   onPhysical,
   onDecorate,
+  onGames,
 }: {
   garden: Garden;
   busy: boolean;
@@ -132,158 +132,172 @@ export function JuniorGarden({
   onDiscover: () => void;
   onPhysical: () => void;
   onDecorate: () => void;
+  onGames: () => void;
 }) {
   const [name, setName] = useState("");
+  const [showEffort, setShowEffort] = useState(false);
   const stage = growth(garden.xp),
     today = garden.todayActions ?? [];
   return (
     <div className="junior-garden">
-      <div className="garden-view">
-        <div className="garden-scene">
-          <span className="scene-label">MY LITTLE TREE FRIEND</span>
-          <div className={`living-tree ${effect ? "tree-happy" : ""}`}>
-            <TreeArt
-              stage={garden.tree ? stage.level : 1}
-              decoration={garden.decoration}
-              name={garden.nickname}
-            />
-            <CareEffect effect={effect} />
+      <div className="screen-actions">
+        <button aria-pressed={!showEffort} onClick={() => setShowEffort(false)}>
+          나무 돌보기
+        </button>
+        <button aria-pressed={showEffort} onClick={() => setShowEffort(true)}>
+          쌓아온 마음
+        </button>
+      </div>
+      <div hidden={showEffort}>
+        <div className="garden-view">
+          <div className="garden-scene">
+            <span className="scene-label">MY LITTLE TREE FRIEND</span>
+            <div className={`living-tree ${effect ? "tree-happy" : ""}`}>
+              <TreeArt
+                stage={garden.tree ? stage.level : 1}
+                decoration={garden.decoration}
+                name={garden.nickname}
+              />
+              <CareEffect effect={effect} />
+            </div>
+            <p>
+              {garden.tree
+                ? garden.nickname || garden.tree.name
+                : "아직 만나지 않은, 당신의 나무"}
+            </p>
+            <small>
+              {garden.tree
+                ? `${garden.tree.species} · ${garden.tree.location}`
+                : "가까운 나무와 첫 인연을 맺어보세요."}
+            </small>
+            {garden.tree && (
+              <form
+                className="name-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void act("rename", { name });
+                }}
+              >
+                <label className="sr-only" htmlFor="tree-name">
+                  나무 애칭
+                </label>
+                <input
+                  id="tree-name"
+                  maxLength={16}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder={
+                    garden.nickname
+                      ? "새 애칭으로 바꾸기"
+                      : "친구의 이름을 지어주세요"
+                  }
+                  required
+                />
+                <button disabled={busy || !name.trim()}>
+                  {garden.nickname ? "변경" : "이름 선물 +10 XP"}
+                </button>
+              </form>
+            )}
           </div>
-          <p>
-            {garden.tree
-              ? garden.nickname || garden.tree.name
-              : "아직 만나지 않은, 당신의 나무"}
-          </p>
-          <small>
-            {garden.tree
-              ? `${garden.tree.species} · ${garden.tree.location}`
-              : "가까운 나무와 첫 인연을 맺어보세요."}
-          </small>
-          {garden.tree && (
-            <form
-              className="name-form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                void act("rename", { name });
-              }}
-            >
-              <label className="sr-only" htmlFor="tree-name">
-                나무 애칭
-              </label>
-              <input
-                id="tree-name"
-                maxLength={16}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={
-                  garden.nickname
-                    ? "새 애칭으로 바꾸기"
-                    : "친구의 이름을 지어주세요"
-                }
-                required
-              />
-              <button disabled={busy || !name.trim()}>
-                {garden.nickname ? "변경" : "이름 선물 +10 XP"}
-              </button>
-            </form>
-          )}
-        </div>
-        <div className="garden-controls">
-          <span className="step-label">관심을 먹고 자라는 나무</span>
-          <h3>
-            {garden.nickname
-              ? `${garden.nickname}, 오늘도 반가워!`
-              : "우리, 조금 더 가까워질까요?"}
-          </h3>
-          <p>
-            작은 손길 하나하나를 기억하고 있어요.
-            <br />
-            함께 보낸 시간이 나무의 성장이 됩니다.
-          </p>
-          {garden.tree ? (
-            <>
-              <div className="growth-title">
-                <b>
-                  Lv. {stage.level} · {stage.name}
-                </b>
-                <span>누적 {garden.xp} XP</span>
-              </div>
-              <progress
-                max={100}
-                value={stage.progress}
-                aria-label={`다음 성장 단계 ${stage.progress}%`}
-              />
-              <div className="next-goal">
-                {stage.nextXp ? (
-                  <>
-                    <strong>다음 성장까지 {stage.nextXp - garden.xp} XP</strong>
-                    <span>{stage.progress}% 자랐어요</span>
-                  </>
-                ) : (
-                  <>
-                    <strong>울창한 나무로 성장했어요! 🌳</strong>
-                    <span>돌봄 포인트는 계속 쌓여요</span>
-                  </>
-                )}
-              </div>
-              <div className="care-actions">
-                <button
-                  disabled={busy || today.includes("water")}
-                  onClick={() => void act("water")}
-                >
-                  <span>💧</span>물 주기
-                  <small>
-                    {today.includes("water") ? "오늘 완료 ✓" : "+10 XP"}
-                  </small>
+          <div className="garden-controls">
+            <span className="step-label">관심을 먹고 자라는 나무</span>
+            <h3>
+              {garden.nickname
+                ? `${garden.nickname}, 오늘도 반가워!`
+                : "우리, 조금 더 가까워질까요?"}
+            </h3>
+            <p>
+              작은 손길 하나하나를 기억하고 있어요.
+              <br />
+              함께 보낸 시간이 나무의 성장이 됩니다.
+            </p>
+            {garden.tree ? (
+              <>
+                <div className="growth-title">
+                  <b>
+                    Lv. {stage.level} · {stage.name}
+                  </b>
+                  <span>누적 {garden.xp} XP</span>
+                </div>
+                <progress
+                  max={100}
+                  value={stage.progress}
+                  aria-label={`다음 성장 단계 ${stage.progress}%`}
+                />
+                <div className="next-goal">
+                  {stage.nextXp ? (
+                    <>
+                      <strong>
+                        다음 성장까지 {stage.nextXp - garden.xp} XP
+                      </strong>
+                      <span>{stage.progress}% 자랐어요</span>
+                    </>
+                  ) : (
+                    <>
+                      <strong>울창한 나무로 성장했어요! 🌳</strong>
+                      <span>돌봄 포인트는 계속 쌓여요</span>
+                    </>
+                  )}
+                </div>
+                <div className="care-actions">
+                  <button
+                    disabled={busy || today.includes("water")}
+                    onClick={() => void act("water")}
+                  >
+                    <span>💧</span>물 주기
+                    <small>
+                      {today.includes("water") ? "오늘 완료 ✓" : "+10 XP"}
+                    </small>
+                  </button>
+                  <button
+                    disabled={busy || today.includes("compost")}
+                    onClick={() => void act("compost")}
+                  >
+                    <span>🌱</span>거름 주기
+                    <small>
+                      {today.includes("compost") ? "오늘 완료 ✓" : "+15 XP"}
+                    </small>
+                  </button>
+                  <button
+                    disabled={busy || today.includes("demo-visit")}
+                    onClick={() => void act("demo-visit")}
+                  >
+                    <span>👣</span>방문 체험
+                    <small>
+                      {today.includes("demo-visit") ? "오늘 완료 ✓" : "+20 XP"}
+                    </small>
+                  </button>
+                </div>
+                <p className="care-note">
+                  게임 속 물·거름은 하루 한 번. 실제 나무 돌봄은 전문가의 안내를
+                  따라요. 샘플 방문은 실제 인증과 구분돼요.
+                </p>
+                <button className="outline wide" onClick={onDecorate}>
+                  ✧ 내 정원 꾸미기{" "}
+                  <span>{garden.xp < 30 ? "30 XP부터" : "장식 고르기 ↗"}</span>
                 </button>
-                <button
-                  disabled={busy || today.includes("compost")}
-                  onClick={() => void act("compost")}
-                >
-                  <span>🌱</span>거름 주기
-                  <small>
-                    {today.includes("compost") ? "오늘 완료 ✓" : "+15 XP"}
-                  </small>
+                <button className="physical-shortcut" onClick={onPhysical}>
+                  <span>💌</span>
+                  <span>
+                    <b>현실의 나무에도 마음을 전해요</b>
+                    <small>
+                      {garden.points >= 100
+                        ? "100 P 달성! 이벤트 신청을 체험해 보세요"
+                        : `이벤트 신청 체험까지 ${Math.max(0, 100 - garden.points)} P`}
+                    </small>
+                  </span>
+                  <span>↗</span>
                 </button>
-                <button
-                  disabled={busy || today.includes("demo-visit")}
-                  onClick={() => void act("demo-visit")}
-                >
-                  <span>👣</span>방문 체험
-                  <small>
-                    {today.includes("demo-visit") ? "오늘 완료 ✓" : "+20 XP"}
-                  </small>
-                </button>
-              </div>
-              <p className="care-note">
-                게임 속 물·거름은 하루 한 번. 실제 나무 돌봄은 전문가의 안내를
-                따라요. 샘플 방문은 실제 인증과 구분돼요.
-              </p>
-              <button className="outline wide" onClick={onDecorate}>
-                ✧ 내 정원 꾸미기{" "}
-                <span>{garden.xp < 30 ? "30 XP부터" : "장식 고르기 ↗"}</span>
+              </>
+            ) : (
+              <button className="primary" onClick={onDiscover}>
+                내 나무 만나기 ↗
               </button>
-              <button className="physical-shortcut" onClick={onPhysical}>
-                <span>💌</span>
-                <span>
-                  <b>현실의 나무에도 마음을 전해요</b>
-                  <small>
-                    {garden.points >= 100
-                      ? "100 P 달성! 이벤트 신청을 체험해 보세요"
-                      : `이벤트 신청 체험까지 ${Math.max(0, 100 - garden.points)} P`}
-                  </small>
-                </span>
-                <span>↗</span>
-              </button>
-            </>
-          ) : (
-            <button className="primary" onClick={onDiscover}>
-              내 나무 만나기 ↗
-            </button>
-          )}
+            )}
+          </div>
         </div>
       </div>
-      {garden.tree && (
+      {garden.tree && showEffort && (
         <>
           <div className="effort-dashboard">
             <div className="effort-heading">
@@ -304,7 +318,9 @@ export function JuniorGarden({
               </div>
             ))}
           </div>
-          <MiniGames onAction={act} busy={busy} todayActions={today} />
+          <div className="screen-actions">
+            <button onClick={onGames}>🎮 돌봄 게임 하러 가기 →</button>
+          </div>
         </>
       )}
     </div>

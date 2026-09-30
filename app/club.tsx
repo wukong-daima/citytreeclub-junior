@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { pageItems } from "../lib/app-navigation";
 import { localFetch } from "../lib/local-api";
 import { TREES } from "../lib/trees";
 import type { Tree } from "./garden-types";
@@ -78,6 +79,7 @@ export function Club({
   const [success, setSuccess] = useState<{ id: number; action: string } | null>(
     null,
   );
+  const [recordsPage, setRecordsPage] = useState(0);
   useEffect(() => {
     if (!success) return;
     const timer = setTimeout(() => setSuccess(null), 3000);
@@ -110,6 +112,12 @@ export function Club({
         if (!r.ok) throw Error(d.error);
         if (live) {
           setState(d);
+          if (window.location.hash.startsWith("#record=")) {
+            const target = d.records.findIndex(
+              (r) => r.id === window.location.hash.slice(8),
+            );
+            if (target >= 0) setRecordsPage(Math.floor(target / 5));
+          }
           setReady(true);
         }
       })
@@ -131,7 +139,7 @@ export function Club({
         .getElementById(`record-${id}`)
         ?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [ready, section, state.records]);
+  }, [ready, section, state.records, recordsPage]);
   async function mutate(action: string, extra: Record<string, unknown> = {}) {
     setBusy(true);
     setError("");
@@ -407,7 +415,7 @@ export function Club({
                 </p>
               )}
               <div className="club-records">
-                {state.records.map((record) => (
+                {pageItems(state.records, recordsPage).items.map((record) => (
                   <RecordCard
                     key={record.id}
                     record={record}
@@ -415,6 +423,27 @@ export function Club({
                     onMutate={mutate}
                   />
                 ))}
+              </div>
+              <div className="page-controls">
+                <button
+                  disabled={pageItems(state.records, recordsPage).page === 0}
+                  onClick={() => setRecordsPage(Math.max(0, recordsPage - 1))}
+                >
+                  이전
+                </button>
+                <span>
+                  {pageItems(state.records, recordsPage).page + 1} /{" "}
+                  {pageItems(state.records, recordsPage).pages}
+                </span>
+                <button
+                  disabled={
+                    pageItems(state.records, recordsPage).page + 1 >=
+                    pageItems(state.records, recordsPage).pages
+                  }
+                  onClick={() => setRecordsPage(recordsPage + 1)}
+                >
+                  다음
+                </button>
               </div>
             </>
           )}

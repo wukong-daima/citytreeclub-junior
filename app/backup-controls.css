@@ -1,10 +1,61 @@
 .local-storage-notice {
-  padding: 14px max(20px, calc((100% - 1180px) / 2));
+  padding: 24px 18px 18px;
   background: var(--surface, #f0f3e9);
   color: var(--ink, #243d31);
   border-bottom: 1px solid #b9c8b8;
   font-size: 13px;
   line-height: 1.6;
+}
+.backup-dock {
+  position: fixed;
+  right: 12px;
+  bottom: calc(90px + env(safe-area-inset-bottom));
+  z-index: 45;
+}
+.backup-toggle {
+  border: 1px solid #b8c7ac;
+  background: var(--surface, #fffdf5);
+  color: var(--ink, #243d31);
+  padding: 10px 14px;
+  min-height: 44px;
+  border-radius: 24px;
+  box-shadow: 0 3px 12px #203c2420;
+  cursor: pointer;
+  font-size: 12px;
+}
+.backup-dock .local-storage-notice {
+  position: absolute;
+  bottom: 54px;
+  right: 0;
+  width: min(330px, calc(100vw - 24px));
+  max-height: calc(100dvh - 190px);
+  overflow: auto;
+  border: 1px solid #b9c8b8;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px #203c2430;
+}
+.backup-close {
+  float: right;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 24px;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.backup-dock .outline {
+  min-height: 44px;
+}
+@media (max-width: 700px) {
+  .backup-toggle span {
+    display: none;
+  }
+  .backup-toggle {
+    font-size: 20px;
+    width: 44px;
+    padding: 4px;
+  }
 }
 .local-storage-notice p {
   margin: 0 0 8px;

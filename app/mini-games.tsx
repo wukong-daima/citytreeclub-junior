@@ -182,6 +182,7 @@ export function MiniGames({ onAction, busy, todayActions }: Props) {
   return (
     <section
       id="mini-games"
+      tabIndex={-1}
       className="mini-games"
       aria-labelledby="mini-games-title"
     >

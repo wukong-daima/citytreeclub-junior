@@ -5,6 +5,7 @@ import { localFetch } from "../lib/local-api";
 import { BackupControls } from "./backup-controls";
 import { TreeArt } from "./tree-art";
 import { growth } from "../lib/domain";
+import { navigateTutorial } from "../lib/tutorial-navigation";
 import { JuniorGarden, Tutorial, CelebrationToast } from "./junior-garden";
 import { TreeMap } from "./tree-map";
 import { Club } from "./club";
@@ -384,20 +385,26 @@ export default function Home() {
               garden={garden}
               busy={busy}
               act={act}
-              onStep={(step) => {
-                if (step === 4) setModal("physical");
-                else {
-                  scrollTo(step === 0 ? "discover" : "garden");
-                  setTimeout(() => {
-                    if (step === 1)
-                      document.getElementById("tree-name")?.focus();
-                    if (step === 3)
-                      document
-                        .getElementById("mini-games")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                  }, 100);
-                }
-              }}
+              onStep={(step) =>
+                navigateTutorial(step, {
+                  assign: () => setModal("assign"),
+                  garden: () => scrollTo("garden"),
+                  water: () => {
+                    void act("water");
+                  },
+                  events: () => setModal("physical"),
+                  focus: (id) => {
+                    setTimeout(() => {
+                      const target = document.getElementById(id);
+                      target?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                      target?.focus({ preventScroll: true });
+                    }, 100);
+                  },
+                })
+              }
             />
           )}
           {tab === "discover" && (
@@ -438,6 +445,7 @@ export default function Home() {
                 </div>
                 <select
                   id="radius"
+                  aria-describedby="radius-help"
                   value={radius}
                   onChange={(e) => {
                     setRadius(Number(e.target.value));
@@ -449,11 +457,17 @@ export default function Home() {
                   <option value={1000}>반경 1km · 여유로운 산책</option>
                   <option value={2000}>반경 2km · 긴 산책</option>
                 </select>
+                <p id="radius-help" className="form-hint">
+                  ‘현재 내 위치로 찾기’를 누른 뒤, 내 위치에서 어느 거리 안의
+                  나무를 내 나무로 만날지 선택해주세요. 직접 검색한 위치도
+                  기준으로 사용할 수 있어요. 반경은 도보 경로가 아닌
+                  직선거리예요.
+                </p>
                 <div className="match-note">
                   <span>✳</span>
                   <p>
-                    <b>우연히 만나, 특별한 사이로</b>거리순으로 가장 가까운 최대
-                    10그루 중<br />
+                    <b>우연히 만나, 특별한 사이로</b>선택한 반경 안에서 가장
+                    가까운 최대 10그루 중<br />
                     무작위로 한 그루와 인연을 맺어요.
                   </p>
                 </div>

@@ -525,6 +525,12 @@ small {
   font-size: 11px;
   color: #59664e;
 }
+.form-hint {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: #526559;
+}
 .match-note {
   display: flex;
   gap: 12px;
